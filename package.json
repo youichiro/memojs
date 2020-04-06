@@ -1,0 +1,26 @@
+{
+  "name": "memojs",
+  "version": "1.0.0",
+  "description": "memo app",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/youichiro/memojs.git"
+  },
+  "keywords": [
+    "memo"
+  ],
+  "author": "youichiro <cinnamon416@gmail.com> (https://github.com/youichiro)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/youichiro/memojs/issues"
+  },
+  "homepage": "https://github.com/youichiro/memojs#readme",
+  "dependencies": {
+    "enquirer": "^2.3.4",
+    "sqlite3": "^4.1.1"
+  }
+}
