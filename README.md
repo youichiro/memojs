@@ -1,7 +1,7 @@
 # memomemo
 
 ```
-$ npm install memomemo
+$ npm install --global memomemo
 
 $ memomemo -h
 Usage: memomemo [text] [<options>]

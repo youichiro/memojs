@@ -165,13 +165,13 @@ async function main() {
   else if ('h' in argv) {
     console.log(usage)
   } else if ('n' in argv) {
-    app.createMemo()  // 作成
+    app.createMemo()
   } else if ('l' in argv) {
-    app.showMemos()  // 一覧
+    app.showMemos()
   } else if ('r' in argv) {
-    app.readMemo()  // 参照
+    app.readMemo()
   } else if ('d' in argv) {
-    app.deleteMemo()  // 削除
+    app.deleteMemo()
   } else {
     console.log(usage)
   }
