@@ -11,7 +11,7 @@ class DB {
     if (!fs.existsSync(saveDir)) {
       fs.mkdirSync(saveDir)
     }
-    this.db = new sqlite3.Database(saveDir + 'memojs.sqlite3')
+    this.db = new sqlite3.Database(saveDir + 'memomemo.sqlite3')
   }
   async createTable() {
     return new Promise((resolve, reject) => {
@@ -85,10 +85,14 @@ class Memo {
   }
 }
 
-class AppBase {
+class App {
+  constructor(tableName) {
+    this.db = new DB(tableName)
+    this.db.init()
+    this.db.createTable()
+  }
   readLines() {
     return new Promise(resolve => {
-      console.log('Type text:')
       let lines = []
       const reader = require('readline').createInterface({
         input: process.stdin,
@@ -101,6 +105,16 @@ class AppBase {
         resolve(lines)
       })
     })
+  }
+  async createMemo() {
+    const lines = await this.readLines()
+    if (lines.length > 0) {
+      const title = lines[0]
+      const text = lines.join('\n')
+      const memo = new Memo(title, text)
+      await this.db.save(memo)
+      console.log(`created memo: ${title}`)
+    }
   }
   selectCLI(titles, message) {
     return new Promise(resolve => {
@@ -117,29 +131,9 @@ class AppBase {
         .catch(console.error)
     })
   }
-}
-
-
-class App extends AppBase {
-  constructor(tableName) {
-    super()
-    this.db = new DB(tableName)
-    this.db.init()
-    this.db.createTable()
-  }
-  async createMemo() {
-    const lines = await this.readLines()
-    if (lines.length > 0) {
-      const title = lines[0]
-      const text = lines.join('\n')
-      const memo = new Memo(title, text)
-      await this.db.save(memo)
-      console.log(`created memo: ${title}`)
-    }
-  }
   async showMemos() {
     const titles = await this.db.all()
-    titles.forEach(title => { console.log(title) })
+    titles.forEach(title => { console.log('- ' + title) })
   }
   async readMemo() {
     const titles = await this.db.all()
@@ -159,6 +153,7 @@ class App extends AppBase {
 
 async function main() {
   const app = new App('memos')
+  const usage = "Usage: memomemo [text] [<options>]\n\nOptions:\n  -n\tcreate a memo\n  -l\tlist up memos\n  -r\tread a memo\n  -d\tdelete a memo"
   const argv = require('minimist')(process.argv.slice(2))
   if (Object.keys(argv).length > 2) {
     throw "Expected only one argument. '-h', '-n', '-l', '-r' or '-d'"
@@ -168,7 +163,7 @@ async function main() {
     return
   }
   else if ('h' in argv) {
-    console.log("usage:\n  -n, メモの新規作成\n  -l, メモの一覧\n  -r, メモの閲覧\n  -d, メモの削除")
+    console.log(usage)
   } else if ('n' in argv) {
     app.createMemo()  // 作成
   } else if ('l' in argv) {
@@ -178,7 +173,7 @@ async function main() {
   } else if ('d' in argv) {
     app.deleteMemo()  // 削除
   } else {
-    console.log("usage:\n  -n, メモの新規作成\n  -l, メモの一覧\n  -r, メモの閲覧\n  -d, メモの削除")
+    console.log(usage)
   }
 }
 
